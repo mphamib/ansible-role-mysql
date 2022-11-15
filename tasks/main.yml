@@ -1,2 +1,25 @@
 ---
-# tasks file for mysql_db
+  - name: Install MariaDB database
+    yum: 
+      name: "{{ packages }}"
+      state: present
+    vars:
+      packages:
+        - mariadb-server
+        - mariadb
+    
+  - name: Start MySQL Service
+    service:
+      name: mariadb
+      state: started
+
+  - name: Create Application Database
+    mysql_db: name={{ db_name }} state=present
+
+  - name: Create Database user
+    mysql_user:
+      name: "{{ db_user }}"
+      password: "{{ db_user_password }}"
+      priv: '*.*:ALL'
+      state: present
+      host: '%'
